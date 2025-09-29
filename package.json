@@ -1,26 +1,32 @@
 {
-  "name": "gooddata-ps-tooling",
+  "name": "automation",
   "author": "GoodData",
   "license": "UNLICENSED",
   "private": true,
-  "version": "1.0.0",
-  "description": "GoodData PS Tooling",
+  "version": "1.0.1",
+  "description": "automation",
   "type": "module",
+  "main": "./dist/app/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "pnpm lint:fix && pnpm typecheck && tsup --config ./config/tsup.config.ts",
     "lint": "prettier --check .",
     "lint:fix": "prettier --write .",
-    "build-dirty": "tsup --config ./config/tsup.config.ts",
+    "build:dirty": "tsup --config ./config/tsup.config.ts",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gooddata/gooddata-ps-tooling.git"
+    "url": "git+https://github.com/davidzoufaly/automation.git"
   },
   "dependencies": {
     "dotenv": "^17.2.2",
     "prettier": "^3.6.2",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^19.8.1",
