@@ -1,0 +1,17 @@
+#   Refer for explanation to following link:
+#   https://lefthook.dev/configuration/
+
+commit-msg:
+  jobs:
+    - run: pnpm commitlint --edit "$1" --config ./config/commitlint.config.mjs
+
+pre-commit:
+  parallel: false
+  commands:
+    lint:
+      glob: "*.{js,mjs,cjs,ts,json,md,yaml}"
+      run: pnpm lint:fix
+
+    typecheck:
+      glob: "*.{ts}"
+      run: pnpm typecheck
