@@ -18,15 +18,20 @@ produkci volá reálná API ad5 = fake names strings v configu ad6) Rozjet TS + 
 
 ## 2DO
 
+- [ ] Otestovat příjímání secrets z clienta a použití ve workflow
+- [ ] Default config lze rozšířit user configem
+- [ ] Cesta k user configu je nastavitelná
+
+## Done
+
 - [x] rozjet TS
 - [x] rozjet prettier
 - [x] rozjet build
 - [x] Vytvořit template config
 - [x] Zjistit transition ID's
-- [] Vytvořit default config
-- [] Vytvořit user config po vzoru MC monorepa
-- [] Default config lze rozšířit user configem
-- [] Cesta k user configu je nastavitelná
+- [x] Vytvořit default config
+- [x] Vytvořit user config po vzoru MC monorepa
+- [x] Vytořit test config
 
 new -(61)-> hacking -(251)-> code review -(81)-> verification backlog -(61)->
 
