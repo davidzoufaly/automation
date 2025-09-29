@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { MONOREPO_COMPONENTS, SLACK_CHANNELS, CODEOWNERS_PATHS } from "../../slack-bot-config.js";
-import { writeOutput } from "../utils/index.js";
+import { MONOREPO_COMPONENTS, SLACK_CHANNELS, CODEOWNERS_PATHS } from "../slack-bot-config.js";
+import { writeOutput } from "../src/utils/index.js";
 
 // Get the directory name of the current module
 

@@ -25,7 +25,7 @@
     "paths": {
       "@constants": ["./src/constants"],
       "@types": ["./src/types"],
-      "@features": ["./src/features"],
+      "@features": ["src/features"],
       "@utils": ["./src/utils"]
     }
   },

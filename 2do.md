@@ -28,9 +28,7 @@ produkci volá reálná API ad5 = fake names strings v configu ad6) Rozjet TS + 
 - [] Default config lze rozšířit user configem
 - [] Cesta k user configu je nastavitelná
 
+new -(61)-> hacking -(251)-> code review -(81)-> verification backlog -(61)->
 
-new     -(61)-> hacking -(251)-> code review -(81)-> verification
-backlog -(61)->
-
-new     <-(241 - not needed)- hacking <-(151)- code review <-(not needed)- verification
-backlog <-(201 - not needed)-
+new <-(241 - not needed)- hacking <-(151)- code review <-(not needed)- verification backlog <-(201 - not
+needed)-

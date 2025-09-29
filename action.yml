@@ -1,0 +1,16 @@
+name: "Greet Action"
+description: "Greets someone and exposes a message output"
+author: "GoodData"
+inputs:
+  name:
+    description: "Name to greet"
+    required: true
+outputs:
+  message:
+    description: "Greeting that was produced"
+runs:
+  using: "node20"
+  main: "dist/index.js"
+branding:
+  icon: "message-square"
+  color: "blue"

@@ -105,44 +105,7 @@ export const defaultConfig: Config = {
   ],
 };
 
-export const testCustomConfig: Config = {
-  base: {
-    jira: {
-      domain: "https://gooddata.atlassian.net",
-      email: process.env.JIRA_EMAIL,
-      apiToken: process.env.JIRA_API_TOKEN,
-    },
-    slack: {
-      botToken: process.env.SLACK_BOT_TOKEN,
-      defaultChannel: "ps_test_automation_1",
-    },
-    github: {
-      token: process.env.GITHUB_TOKEN,
-    },
-  },
-  actions: [
-    {
-      name: "Tickets to hacking",
-      extends: "to-hacking",
-    },
-    {
-      name: "Auto 2 to review",
-      extends: "to-review",
-      channel: "ps-test_automation_2",
-      commitScopes: ["auto-2"],
-      codeownersPath: "/packages/auto-2",
-    },
-    {
-      name: "Auto 3 to review",
-      extends: "to-review",
-      channel: "ps-test_automation_3",
-      commitScopes: ["auto-3"],
-      codeownersPath: "/packages/auto-3",
-    },
-  ],
-};
-
-export const mcCustomConfig: Config = {
+export const mcCustomConfig = {
   base: {
     jira: {
       domain: "https://gooddata.atlassian.net",
