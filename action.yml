@@ -5,6 +5,18 @@ inputs:
   name:
     description: "Name to greet"
     required: true
+  jira-api-token:
+    description: "Jira API token"
+    required: true
+  jira-email:
+    description: "Jira user email"
+    required: true
+  slack-bot-token:
+    description: "Slack bot token"
+    required: true
+  github-token:
+    description: "GitHub token"
+    required: true
 outputs:
   message:
     description: "Greeting that was produced"
