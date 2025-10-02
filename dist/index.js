@@ -31726,8 +31726,12 @@ var __webpack_exports__ = {};
 
 async function run() {
     try {
+        const JIRA_EMAIL = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("jira-email", { required: true });
+        const JIRA_API_TOKEN = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("jira-api-token", { required: true });
+        const SLACK_BOT_TOKEN = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("slack-bot-token", { required: true });
+        const GITHUB_TOKEN = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("github-token", { required: true });
         const name = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("name", { required: true });
-        const msg = `Hello, ${name}! From repo ${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner}/${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo} on ${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.eventName}.`;
+        const msg = `Hello, ${name}! From repo ${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner}/${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo} on ${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.eventName} and ${JIRA_EMAIL} ${JIRA_API_TOKEN} ${SLACK_BOT_TOKEN} ${GITHUB_TOKEN}.`;
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput("message", msg);
     }
     catch (err) {

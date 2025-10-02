@@ -10,11 +10,14 @@ type Config = {
   base: {
     jira: {
       domain?: string;
+      // this user should have write permissions to the projects where the issues are
       email?: string;
       apiToken?: string;
     };
     slack: {
+      // this bot should be added to the channels where you want to post messages
       botToken?: string;
+      // if commit scope does not match any action, this channel is used
       defaultChannel?: string;
     };
     github: {
@@ -53,6 +56,17 @@ type Config = {
     // optional - if used, and 'reviewers' property is not specified, it search for this path inside CODEOWNERS file, if path not found it will fallback to default codeowners or do nothing if there are no default owners.
     codeownersPath?: string;
   }[]; // Array of action configurations
+};
+
+export type publicConfig = Omit<Config, "base"> & {
+  base: {
+    jira: {
+      domain?: string;
+    };
+    slack: {
+      defaultChannel?: string;
+    };
+  };
 };
 
 export const defaultConfig: Config = {
@@ -105,199 +119,13 @@ export const defaultConfig: Config = {
   ],
 };
 
-export const mcCustomConfig = {
-  base: {
-    jira: {
-      domain: "https://gooddata.atlassian.net",
-      // this user should have write permissions to the projects where the issues are
-      email: process.env.JIRA_EMAIL,
-      apiToken: process.env.JIRA_API_TOKEN,
-    },
-    slack: {
-      // this bot should be added to the channels where you want to post messages
-      botToken: process.env.SLACK_BOT_TOKEN,
-      // if commit scope does not match any action, this channel is used
-      defaultChannel: "cust-mc_monorepo",
-    },
-    github: {
-      token: process.env.GITHUB_TOKEN,
-    },
-  },
-  actions: [
-    // This enables to-hacking action
-    {
-      name: "Tickets to hacking",
-      extends: "to-hacking",
-    },
-    // This configures to-review action for all MC packages/apps
-    // mic
-    {
-      name: "MIC to review",
-      extends: "to-review",
-      channel: "cust-mc_mic-fe",
-      commitScopes: ["mic-lib"],
-      codeownersPath: "/packages/mic-components",
-    },
-    // fi-e2e
-    {
-      name: "FI-E2E to review",
-      extends: "to-review",
-      commitScopes: ["fi-e2e"],
-      channel: "cust-mc_fi-fe",
-      codeownersPath: "/packages/fi-e2e",
-    },
-    // mic-e2e
-    {
-      name: "MIC-E2E to review",
-      extends: "to-review",
-      channel: "cust-mc_mic-fe",
-      commitScopes: ["mic-e2e"],
-      codeownersPath: "/packages/mic-e2e",
-    },
-    // fi-app
-    {
-      name: "FI-App to review",
-      extends: "to-review",
-      channel: "cust-mc_fi-fe",
-      commitScopes: ["fi-app"],
-      codeownersPath: "/apps/fi-app",
-    },
-    // mic-app
-    {
-      name: "MIC-App to review",
-      extends: "to-review",
-      channel: "cust-mc_mic-fe",
-      commitScopes: ["mic-app"],
-      codeownersPath: "/apps/mic-parent-mock",
-    },
-    // nudata-app
-    {
-      name: "NuData-App to review",
-      extends: "to-review",
-      channel: "cust-mc_nudata-fe",
-      commitScopes: ["nudata-app"],
-      codeownersPath: "/apps/nudata-app",
-    },
-    // ext-serv -> default channel
-    {
-      name: "Ext-Serv to review",
-      extends: "to-review",
-      commitScopes: ["ext-serv"],
-      codeownersPath: "/packages/external-services",
-    },
-    // repo|UI -> default channel
-    {
-      name: "Repo UI to review",
-      extends: "to-review",
-      commitScopes: ["repo", "ui"],
-      codeownersPath: "/packages/repo|UI",
-    },
-    // This configures to-verification action for all MC packages/apps
-    // mic lib, app QA
-    {
-      name: "MIC to verification QA",
-      description:
-        "Verification Slack message and JIRA ticket transition for MIC library changes that should be verified by QA.",
-      extends: "to-verification",
-      commitScopes: ["mic-lib, mic-app"],
-      channel: "cust-mc_mic-fe",
-      commitTypes: ["feat", "fix"],
-      reviewers: ["UUSH95T71", "U08DRGS3DK6"], // thao, giao
-    },
-    // mic lib DEV
-    {
-      name: "MIC package to verification by DEV",
-      description:
-        "Verification Slack message and JIRA ticket transition for MIC library changes that should be verified by DEV.",
-      extends: "to-verification",
-      commitScopes: ["mic-lib"],
-      channel: "cust-mc_mic-fe",
-      commitTypes: ["chore", "docs", "style", "refactor", "perf", "test"],
-      codeownersPath: "/packages/mic-components",
-    },
-    // mic app DEV
-    {
-      name: "MIC app to Verification by DEV",
-      description:
-        "Verification Slack message and JIRA ticket transition for MIC app changes that should be verified by DEV.",
-      extends: "to-verification",
-      commitScopes: ["mic-app"],
-      channel: "cust-mc_mic-fe",
-      commitTypes: ["chore", "docs", "style", "refactor", "perf", "test"],
-      codeownersPath: "/apps/mic-parent-mock",
-    },
-    // mic app QA
-    {
-      name: "MIC app to Verification by QA",
-      description:
-        "Verification Slack message and JIRA ticket transition for MIC app changes that should be verified by QA.",
-      extends: "to-verification",
-      commitScopes: ["mic-app"],
-      channel: "cust-mc_mic-fe",
-      commitTypes: ["feat", "fix"],
-      reviewers: ["UUSH95T71", "U08DRGS3DK6"], // thao, giao
-    },
-    // mic e2e
-    {
-      name: "MIC E2E to Verification by DEV",
-      description:
-        "Verification Slack message and JIRA ticket transition for MIC e2e test changes that should be verified by DEV.",
-      extends: "to-verification",
-      commitScopes: ["mic-e2e"],
-      channel: "cust-mc_mic-fe",
-      codeownersPath: "/packages/mic-e2e",
-    },
-    // fi app Dev
-    {
-      name: "FI App to Verification by DEV",
-      description:
-        "Verification Slack message and JIRA ticket transition for FI app changes that should be verified by DEV.",
-      extends: "to-verification",
-      commitScopes: ["fi-app"],
-      commitTypes: ["chore", "docs", "style", "refactor", "perf", "test"],
-      channel: "cust-mc_fi-fe",
-      codeownersPath: "/apps/fi-app",
-    },
-    // fi app QA
-    {
-      name: "FI App to Verification by QA",
-      description:
-        "Verification Slack message and JIRA ticket transition for FI app changes that should be verified by QA.",
-      extends: "to-verification",
-      commitScopes: ["fi-app"],
-      commitTypes: ["feat", "fix"],
-      channel: "cust-mc_fi-fe",
-      reviewers: ["UUSH95T71", "U08DRGS3DK6"], // thao, giao
-    },
-    // fi e2e
-    {
-      name: "FI E2E to Verification by DEV",
-      description:
-        "Verification Slack message and JIRA ticket transition for FI e2e test changes that should be verified by DEV.",
-      extends: "to-verification",
-      commitScopes: ["fi-e2e"],
-      channel: "cust-mc_fi-fe",
-      codeownersPath: "/packages/fi-e2e",
-    },
-    // monorepo DEV
-    {
-      name: "Monorepo to Verification by DEV",
-      description:
-        "Verification Slack message and JIRA ticket transition for monorepo changes that should be verified by DEV.",
-      extends: "to-verification",
-      commitScopes: ["ext-serv", "repo", "ui"],
-      commitTypes: ["chore", "docs", "style", "refactor", "perf", "test"],
-      codeownersPath: "*",
-    },
-    // monorepo QA
-    {
-      name: "Monorepo to Verification by QA",
-      description:
-        "Verification Slack message and JIRA ticket transition for monorepo changes that should be verified by QA.",
-      extends: "to-verification",
-      commitScopes: ["ext-serv", "repo", "ui"],
-      commitTypes: ["feat", "fix"],
-      reviewers: ["UUSH95T71", "U08DRGS3DK6"], // thao, giao
-    },
-  ],
-};
+// const mergeConfigs = (defaultConfig: Config, userConfig: publicConfig): Config => {
+//   return {
+//     ...defaultConfig,
+//     base: {
+//       ...defaultConfig.base,
+//       ...userConfig.base,
+//     },
+//     actions: [...defaultConfig.actions, ...userConfig.actions],
+//   };
+// };
