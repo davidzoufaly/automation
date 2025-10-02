@@ -1,4 +1,4 @@
-# GoodData Slack, JIRA, GIT automation package
+# Mateflow -> GoodData Slack, JIRA, GIT automation package
 
 ## Ownership
 
@@ -28,6 +28,9 @@ on:
   pull_request:
     types: [opened, ready_for_review, closed]
 ```
+
+- You need to configure these secrets inside your repository: MATEFLOW_JIRA_EMAIL, MATEFLOW_JIRA_TOKEN,
+  MATEFLOW_SLACKBOT_TOKEN, MATEFLOW_GITHUB_TOKEN
 
 ## Features
 

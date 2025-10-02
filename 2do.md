@@ -1,3 +1,22 @@
+## 2DO
+
+- [ ] Action respektuje default config
+- [x] Neexposovat zbytečné věci v configu -> automation client default config
+- [ ] Default config lze rozšířit user configem
+- [ ] Cesta k user configu je nastavitelná
+
+## Done
+
+- [x] Otestovat příjímání secrets z clienta a použití ve workflow
+- [x] rozjet TS
+- [x] rozjet prettier
+- [x] rozjet build
+- [x] Vytvořit template config
+- [x] Zjistit transition ID's
+- [x] Vytvořit default config
+- [x] Vytvořit user config po vzoru MC monorepa
+- [x] Vytořit test config
+
 ## Cíl
 
 1. Refaktorovat stávající řešení, aby šlo jednoduše konfigurovat na jednom místě.
@@ -15,23 +34,6 @@ ad1,2,3,7 = Config file ad4 = abstrakční vrstva, která na devu simuluje akce 
 produkci volá reálná API ad5 = fake names strings v configu ad6) Rozjet TS + Building
 
 - udělat monorepo / vedlejší projekt, který bude tenhle package používat
-
-## 2DO
-
-- [ ] Otestovat příjímání secrets z clienta a použití ve workflow
-- [ ] Default config lze rozšířit user configem
-- [ ] Cesta k user configu je nastavitelná
-
-## Done
-
-- [x] rozjet TS
-- [x] rozjet prettier
-- [x] rozjet build
-- [x] Vytvořit template config
-- [x] Zjistit transition ID's
-- [x] Vytvořit default config
-- [x] Vytvořit user config po vzoru MC monorepa
-- [x] Vytořit test config
 
 new -(61)-> hacking -(251)-> code review -(81)-> verification backlog -(61)->
 
