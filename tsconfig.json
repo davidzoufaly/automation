@@ -26,7 +26,8 @@
       "@constants": ["./src/constants"],
       "@types": ["./src/types"],
       "@features": ["src/features"],
-      "@utils": ["./src/utils"]
+      "@utils": ["./src/utils"],
+      "@services": ["./src/services"]
     }
   },
   "exclude": ["node_modules"],

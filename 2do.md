@@ -4,6 +4,7 @@
 - [x] Neexposovat zbytečné věci v configu -> automation client default config
 - [ ] Default config lze rozšířit user configem
 - [ ] Cesta k user configu je nastavitelná
+- [ ] Merge commit vs squash and merge -> post merge job, aby fungovala s commit message / PR title?
 
 ## Done
 
