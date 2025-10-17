@@ -1,5 +1,3 @@
-// TODO: mergování user configu s default configem
-// TODO: jak zamezit toho aby se akce neduplikovaly
 // TODO: fake MC config to see if it is designed well
 // TODO: create testing config
 

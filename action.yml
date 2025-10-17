@@ -17,6 +17,10 @@ inputs:
   github-token:
     description: "GitHub token"
     required: true
+  config-file-path:
+    description: "Path to automation config file (relative to repository root)"
+    required: false
+    default: "config/automation.config.json"
 outputs:
   message:
     description: "Greeting that was produced"

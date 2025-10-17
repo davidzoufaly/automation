@@ -31,6 +31,8 @@ export const mergeConfigs = (
   const defaultActions = [];
   const customActions = [];
 
+  let toHackingCount = 0;
+
   for (const action of actions) {
     if (action.extends) {
       defaultActions.push(action);
@@ -60,6 +62,12 @@ export const mergeConfigs = (
         throw new Error(
           "Default to-hacking action does not support commitScopes, commitTypes, message or channel property",
         );
+      }
+
+      toHackingCount += 1;
+
+      if (toHackingCount > 1) {
+        throw new Error("There can be only one default to-hacking action");
       }
 
       return {

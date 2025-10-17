@@ -1,13 +1,16 @@
 ## 2DO
 
-- [ ] Action respektuje default config
-- [x] Neexposovat zbytečné věci v configu -> automation client default config
-- [ ] Default config lze rozšířit user configem
+- [ ] načíst user config z clienta
+- [ ] vytvořit real config
+- [ ] otestovat real config
 - [ ] Cesta k user configu je nastavitelná
 - [ ] Merge commit vs squash and merge -> post merge job, aby fungovala s commit message / PR title?
 
 ## Done
 
+- [x] Action respektuje default config
+- [x] Neexposovat zbytečné věci v configu -> automation client default config
+- [x] Default config lze rozšířit user configem
 - [x] Otestovat příjímání secrets z clienta a použití ve workflow
 - [x] rozjet TS
 - [x] rozjet prettier
