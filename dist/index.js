@@ -31683,59 +31683,214 @@ module.exports = parseParams
 /******/ }
 /******/ 
 /************************************************************************/
-/******/ /* webpack/runtime/compat get default export */
-/******/ (() => {
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__nccwpck_require__.n = (module) => {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			() => (module['default']) :
-/******/ 			() => (module);
-/******/ 		__nccwpck_require__.d(getter, { a: getter });
-/******/ 		return getter;
-/******/ 	};
-/******/ })();
-/******/ 
-/******/ /* webpack/runtime/define property getters */
-/******/ (() => {
-/******/ 	// define getter functions for harmony exports
-/******/ 	__nccwpck_require__.d = (exports, definition) => {
-/******/ 		for(var key in definition) {
-/******/ 			if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
-/******/ 				Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 			}
-/******/ 		}
-/******/ 	};
-/******/ })();
-/******/ 
-/******/ /* webpack/runtime/hasOwnProperty shorthand */
-/******/ (() => {
-/******/ 	__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ })();
-/******/ 
 /******/ /* webpack/runtime/compat */
 /******/ 
 /******/ if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = new URL('.', import.meta.url).pathname.slice(import.meta.url.match(/^file:\/\/\/\w:/) ? 1 : 0, -1) + "/";
 /******/ 
 /************************************************************************/
 var __webpack_exports__ = {};
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(6966);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(4903);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
+
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@1.11.1/node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(6966);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@6.0.1/node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(4903);
+;// CONCATENATED MODULE: ./src/services/config.ts
+const defaultActionToHacking = {
+    name: "Default to Hacking",
+    description: "Default to hacking action, triggers when PR is marked as draft and moves the linked JIRA issue to 'Hacking' status.",
+    trigger: "pr-as-draft",
+    extends: "to-hacking",
+    transitionId: "61",
+};
+const defaultActionToReview = {
+    name: "Default to Review",
+    description: "Default to review action, triggers when PR is marked as ready for review and moves the linked JIRA issue to 'Code Review' status and sends a slack message.",
+    trigger: "pr-ready-for-review",
+    extends: "to-review",
+    message: "Hey, PR from {{pr_author}} for {{pr_title}} is ready to review, for the context here is JIRA: {{jira_id}}, PTAL {{reviewers}} :review:",
+    transitionId: "251",
+};
+const defaultActionToVerification = {
+    name: "Default to Verification",
+    description: "Default to verification action, triggers when PR is merged and moves the linked JIRA issue to 'Verification' status and sends a slack message.",
+    trigger: "pr-merged",
+    transitionId: "81",
+    message: "Hey, ticket {{jira_id}}: {{jira_title}} is now ready for verification, PTAL {{reviewers}} :test_tube:",
+};
+
+;// CONCATENATED MODULE: ./src/services/index.ts
+
+
+
+;// CONCATENATED MODULE: ./src/utils/config-utils.ts
+
+const mergeConfigs = (secrets, userConfig) => {
+    const configBase = {
+        ...userConfig.base,
+        jira: {
+            ...userConfig.base.jira,
+            email: secrets.jiraEmail,
+            apiToken: secrets.jiraApiToken,
+        },
+        slack: {
+            ...userConfig.base.slack,
+            botToken: secrets.slackbotToken,
+        },
+        github: {
+            token: secrets.githubToken,
+        },
+    };
+    const actions = userConfig.actions;
+    const defaultActions = [];
+    const customActions = [];
+    let toHackingCount = 0;
+    for (const action of actions) {
+        if (action.extends) {
+            defaultActions.push(action);
+        }
+        else {
+            customActions.push(action);
+        }
+    }
+    const defaultActionsModifiedByUserConfig = defaultActions.map((defaultActionUtilizedByUser) => {
+        if (defaultActionUtilizedByUser.trigger) {
+            throw new Error("Default action cannot have trigger property, it is defined by 'extends' property");
+        }
+        if (defaultActionUtilizedByUser.transitionId) {
+            throw new Error("Default action must not have transitionId property, it is defined by 'extends' property");
+        }
+        if (defaultActionUtilizedByUser.extends === "to-hacking") {
+            if (defaultActionUtilizedByUser.commitScopes ||
+                defaultActionUtilizedByUser.commitTypes ||
+                defaultActionUtilizedByUser.message ||
+                defaultActionUtilizedByUser.channel) {
+                throw new Error("Default to-hacking action does not support commitScopes, commitTypes, message or channel property");
+            }
+            toHackingCount += 1;
+            if (toHackingCount > 1) {
+                throw new Error("There can be only one default to-hacking action");
+            }
+            return {
+                name: defaultActionUtilizedByUser.name || defaultActionToHacking.name,
+                description: defaultActionUtilizedByUser.description || defaultActionToHacking.description,
+                trigger: defaultActionToHacking.trigger,
+                transitionId: defaultActionUtilizedByUser.transitionId || defaultActionToHacking.transitionId,
+            };
+        }
+        if (defaultActionUtilizedByUser.extends === "to-review") {
+            return {
+                name: defaultActionUtilizedByUser.name || defaultActionToReview.name,
+                description: defaultActionUtilizedByUser.description || defaultActionToReview.description,
+                trigger: defaultActionToReview.trigger,
+                transitionId: defaultActionToReview.transitionId,
+                message: defaultActionUtilizedByUser.message || defaultActionToReview.message,
+                commitScopes: defaultActionUtilizedByUser.commitScopes,
+                commitTypes: defaultActionUtilizedByUser.commitTypes,
+                channel: defaultActionUtilizedByUser.channel,
+                reviewers: defaultActionUtilizedByUser.reviewers,
+                codeownersPath: defaultActionUtilizedByUser.codeownersPath,
+            };
+        }
+        if (defaultActionUtilizedByUser.extends === "to-verification") {
+            return {
+                name: defaultActionUtilizedByUser.name || defaultActionToVerification.name,
+                description: defaultActionUtilizedByUser.description || defaultActionToVerification.description,
+                trigger: defaultActionToVerification.trigger,
+                transitionId: defaultActionToVerification.transitionId,
+                message: defaultActionUtilizedByUser.message || defaultActionToVerification.message,
+                commitScopes: defaultActionUtilizedByUser.commitScopes,
+                commitTypes: defaultActionUtilizedByUser.commitTypes,
+                channel: defaultActionUtilizedByUser.channel,
+                reviewers: defaultActionUtilizedByUser.reviewers,
+                codeownersPath: defaultActionUtilizedByUser.codeownersPath,
+            };
+        }
+        throw new Error("Unknown extends property value in default action");
+    });
+    const validTriggers = ["pr-as-draft", "pr-ready-for-review", "pr-merged"];
+    const validCustomActions = customActions.map((customAction) => {
+        if (customAction.trigger && validTriggers.includes(customAction.trigger) && customAction.name) {
+            throw new Error("Custom action must have a valid trigger");
+        }
+        if (!customAction.transitionId && !customAction.message) {
+            throw new Error("Custom action must have at least transitionId or message property");
+        }
+        return customAction;
+    });
+    const config = {
+        base: configBase,
+        actions: [...validCustomActions, ...defaultActionsModifiedByUserConfig],
+    };
+    return config;
+};
+
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(9896);
+// EXTERNAL MODULE: external "path"
+var external_path_ = __nccwpck_require__(6928);
+;// CONCATENATED MODULE: ./src/utils/file-utils.ts
+
+
+
+async function readConfigFile() {
+    const configFilePath = core.getInput("config-file-path");
+    try {
+        const workspace = process.env.GITHUB_WORKSPACE || process.cwd();
+        const absolutePath = external_path_.join(workspace, configFilePath);
+        core.info(`Looking for config file at: ${absolutePath}`);
+        if (!external_fs_.existsSync(absolutePath)) {
+            core.warning(`Config file not found at ${absolutePath}`);
+            return null;
+        }
+        try {
+            const configContent = external_fs_.readFileSync(absolutePath, "utf8");
+            const configObject = JSON.parse(configContent);
+            core.info("Successfully parsed JSON config file");
+            return configObject;
+        }
+        catch (parseError) {
+            core.warning(`Failed to parse JSON config file: ${parseError instanceof Error ? parseError.message : String(parseError)}`);
+            return null;
+        }
+    }
+    catch (error) {
+        core.warning(`Error reading config file: ${error instanceof Error ? error.message : String(error)}`);
+        return null;
+    }
+}
+
+;// CONCATENATED MODULE: ./src/utils/index.ts
+
+
+
+;// CONCATENATED MODULE: ./src/index.ts
+
 
 
 async function run() {
     try {
-        const JIRA_EMAIL = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("jira-email", { required: true });
-        const JIRA_API_TOKEN = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("jira-api-token", { required: true });
-        const SLACKBOT_TOKEN = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("slackbot-token", { required: true });
-        const GITHUB_TOKEN = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("github-token", { required: true });
-        const name = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("name", { required: true });
-        const msg = `Hello, ${name}! From repo ${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner}/${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo} on ${_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.eventName} and ${JIRA_EMAIL} ${JIRA_API_TOKEN} ${SLACKBOT_TOKEN} ${GITHUB_TOKEN}.`;
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput("message", msg);
+        const JIRA_EMAIL = core.getInput("jira-email", { required: true });
+        const JIRA_API_TOKEN = core.getInput("jira-api-token", { required: true });
+        const SLACKBOT_TOKEN = core.getInput("slackbot-token", { required: true });
+        const GITHUB_TOKEN = core.getInput("github-token", { required: true });
+        const userConfig = await readConfigFile();
+        if (!userConfig) {
+            throw new Error("Failed to load user configuration");
+        }
+        const config = mergeConfigs({
+            jiraApiToken: JIRA_API_TOKEN,
+            jiraEmail: JIRA_EMAIL,
+            slackbotToken: SLACKBOT_TOKEN,
+            githubToken: GITHUB_TOKEN,
+        }, userConfig);
+        const name = core.getInput("name", { required: true });
+        const msg = `Hello, ${name}! From repo ${github.context.repo.owner}/${github.context.repo.repo} on ${github.context.eventName} and ${JIRA_EMAIL} ${JIRA_API_TOKEN} ${SLACKBOT_TOKEN} ${GITHUB_TOKEN}.`;
+        core.setOutput("message", msg);
+        const msg2 = `Configuration: ${JSON.stringify(config, null, 2)}`;
+        console.log(msg2);
     }
     catch (err) {
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(err?.message ?? String(err));
+        core.setFailed(err?.message ?? String(err));
     }
 }
 run();

@@ -46,7 +46,7 @@ export const mergeConfigs = (
       throw new Error("Default action cannot have trigger property, it is defined by 'extends' property");
     }
 
-    if (!defaultActionUtilizedByUser.transitionId) {
+    if (defaultActionUtilizedByUser.transitionId) {
       throw new Error(
         "Default action must not have transitionId property, it is defined by 'extends' property",
       );
